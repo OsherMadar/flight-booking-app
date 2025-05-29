@@ -4,7 +4,7 @@ function BookingHistory() {
   const [bookings, setBookings] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5002/api/bookings')
+    fetch('https://flight-booking-app-production.up.railway.app/api/bookings')
       .then(res => res.json())
       .then(data => setBookings(data))
       .catch(err => console.error('Error fetching bookings:', err));

@@ -11,11 +11,19 @@ function Flights() {
   const [email, setEmail] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5002/api/flights')
-      .then(res => res.json())
-      .then(data => {
-        setFlights(data);
-        setFilteredFlights(data);
+    fetch('https://flight-booking-app-production.up.railway.app/api/flights')
+      .then(async (res) => {
+        const data = await res.json();
+        console.log('📦 Flight data:', data);
+
+        if (Array.isArray(data)) {
+          setFlights(data);
+          setFilteredFlights(data);
+        } else {
+          console.error('❌ Data is not an array:', data);
+          setFlights([]);
+          setFilteredFlights([]);
+        }
       })
       .catch(err => console.error('Error fetching flights:', err));
   }, []);
@@ -51,7 +59,7 @@ function Flights() {
       return;
     }
 
-    fetch('http://localhost:5002/api/bookings', {
+    fetch('https://flight-booking-app-production.up.railway.app/api/bookings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -102,7 +110,7 @@ function Flights() {
         <button onClick={handleClear} style={{ marginLeft: '1rem' }}>Clear</button>
       </div>
 
-      {filteredFlights.length === 0 ? (
+      {!Array.isArray(filteredFlights) || filteredFlights.length === 0 ? (
         <p>No flights found.</p>
       ) : (
         <ul style={{ listStyleType: 'none', padding: 0 }}>

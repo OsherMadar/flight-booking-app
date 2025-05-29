@@ -7,7 +7,7 @@ function BookingForm({ flightId, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch('http://localhost:5002/api/bookings', {
+    const response = await fetch('https://flight-booking-app-production.up.railway.app/api/bookings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
