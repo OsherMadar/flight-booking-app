@@ -1,0 +1,19 @@
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+
+# Env
+.env
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+
+# Others
+*.lock
