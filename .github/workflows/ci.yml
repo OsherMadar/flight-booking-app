@@ -29,7 +29,10 @@ jobs:
       - name: 🧪 Run tests
         run: npm test
 
+      - name: 🚀 Install Railway CLI
+        run: npm install -g railway
+
       - name: 🚀 Deploy to Railway
-        uses: railwayapp/cli-action@v1
-        with:
-          railwayToken: ${{ secrets.RAILWAY_TOKEN }}
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up --yes
