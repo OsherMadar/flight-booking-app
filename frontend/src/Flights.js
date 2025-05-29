@@ -10,6 +10,17 @@ function Flights() {
   const [passengerName, setPassengerName] = useState('');
   const [email, setEmail] = useState('');
 
+  // Format ISO string to DD/MM/YYYY HH:MM
+  const formatDateTime = (isoString) => {
+    const date = new Date(isoString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year}, ${hours}:${minutes}`;
+  };
+
   useEffect(() => {
     fetch('https://flight-booking-app-production.up.railway.app/api/flights')
       .then(async (res) => {
@@ -34,12 +45,18 @@ function Flights() {
       return;
     }
 
+    // departureDate is already in YYYY-MM-DD from <input type="date">
+    const searchDateString = departureDate;
+    console.log('🔎 Normalized search date:', searchDateString);
+
     const filtered = flights.filter(flight => {
-      const flightDate = new Date(flight.departure_time).toISOString().split('T')[0];
+      const flightDateString = flight.departure_time.split('T')[0];
+      console.log('✈️ flightDate:', flightDateString, '| Looking for:', searchDateString);
+
       return (
         flight.origin.toLowerCase().includes(origin.toLowerCase()) &&
         flight.destination.toLowerCase().includes(destination.toLowerCase()) &&
-        flightDate === departureDate
+        flightDateString === searchDateString
       );
     });
 
@@ -85,6 +102,12 @@ function Flights() {
     <div style={{ padding: '2rem', backgroundColor: '#fff0f5', minHeight: '100vh' }}>
       <h2 style={{ color: '#cc0066' }}>Available Flights</h2>
 
+      <div style={{ marginBottom: '1rem' }}>
+        <p style={{ fontStyle: 'italic', fontSize: '0.9rem', color: '#888' }}>
+          * Select date using the calendar (e.g. 2025-06-02 for June 2nd)
+        </p>
+      </div>
+
       <div style={{ marginBottom: '2rem' }}>
         <input
           type="text"
@@ -126,7 +149,7 @@ function Flights() {
               }}
             >
               ✈️ <strong>{flight.origin}</strong> → <strong>{flight.destination}</strong><br />
-              🕐 {new Date(flight.departure_time).toLocaleString()} → {new Date(flight.arrival_time).toLocaleString()}<br />
+              🕐 {formatDateTime(flight.departure_time)} → {formatDateTime(flight.arrival_time)}<br />
               💵 {flight.price ? `${parseFloat(flight.price).toFixed(2)} $` : 'Price not available'}<br />
               <button
                 onClick={() => setShowBookingForm(flight.id)}
