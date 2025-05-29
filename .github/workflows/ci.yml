@@ -1,0 +1,33 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./Backend
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: ✅ Lint (optional)
+        run: echo "No ESLint configured yet - skipping"
+
+      - name: 🧪 Run tests (optional)
+        run: echo "No tests configured yet - skipping"
