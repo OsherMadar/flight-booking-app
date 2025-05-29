@@ -1,13 +1,14 @@
-// frontend/src/Flights.js
 import React, { useEffect, useState } from 'react';
 
 function Flights() {
   const [flights, setFlights] = useState([]);
   const [filteredFlights, setFilteredFlights] = useState([]);
-
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
   const [departureDate, setDepartureDate] = useState('');
+  const [showBookingForm, setShowBookingForm] = useState(null);
+  const [passengerName, setPassengerName] = useState('');
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:5002/api/flights')
@@ -44,11 +45,38 @@ function Flights() {
     setFilteredFlights(flights);
   };
 
+  const handleBooking = (flightId) => {
+    if (!passengerName || !email) {
+      alert("Please fill in all booking fields");
+      return;
+    }
+
+    fetch('http://localhost:5002/api/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        flight_id: flightId,
+        passenger_name: passengerName,
+        email: email,
+      }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        alert('Booking successful!');
+        setShowBookingForm(null);
+        setPassengerName('');
+        setEmail('');
+      })
+      .catch(err => {
+        console.error('Booking error:', err);
+        alert('Booking failed.');
+      });
+  };
+
   return (
     <div style={{ padding: '2rem', backgroundColor: '#fff0f5', minHeight: '100vh' }}>
       <h2 style={{ color: '#cc0066' }}>Available Flights</h2>
 
-      {/* 🔍 טופס חיפוש */}
       <div style={{ marginBottom: '2rem' }}>
         <input
           type="text"
@@ -74,7 +102,6 @@ function Flights() {
         <button onClick={handleClear} style={{ marginLeft: '1rem' }}>Clear</button>
       </div>
 
-      {/* ✈️ רשימת טיסות */}
       {filteredFlights.length === 0 ? (
         <p>No flights found.</p>
       ) : (
@@ -83,16 +110,43 @@ function Flights() {
             <li
               key={flight.id}
               style={{
-                marginBottom: '1.5rem',
+                marginBottom: '2rem',
                 padding: '1rem',
                 backgroundColor: '#ffe6f0',
                 borderRadius: '10px',
                 boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
               }}
             >
-              ✈️ <strong>{flight.origin}</strong> → <strong>{flight.destination}</strong> <br />
-              🕐 {new Date(flight.departure_time).toLocaleString()} → {new Date(flight.arrival_time).toLocaleString()} <br />
-              💵 {flight.price ? `${parseFloat(flight.price).toFixed(2)} $` : 'Price not available'}
+              ✈️ <strong>{flight.origin}</strong> → <strong>{flight.destination}</strong><br />
+              🕐 {new Date(flight.departure_time).toLocaleString()} → {new Date(flight.arrival_time).toLocaleString()}<br />
+              💵 {flight.price ? `${parseFloat(flight.price).toFixed(2)} $` : 'Price not available'}<br />
+              <button
+                onClick={() => setShowBookingForm(flight.id)}
+                style={{ marginTop: '1rem' }}
+              >
+                Book Flight
+              </button>
+
+              {showBookingForm === flight.id && (
+                <div style={{ marginTop: '1rem', backgroundColor: '#fff5f8', padding: '1rem', borderRadius: '8px' }}>
+                  <h4>Booking Form</h4>
+                  <input
+                    type="text"
+                    placeholder="Passenger Name"
+                    value={passengerName}
+                    onChange={(e) => setPassengerName(e.target.value)}
+                    style={{ marginBottom: '0.5rem', display: 'block' }}
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    style={{ marginBottom: '0.5rem', display: 'block' }}
+                  />
+                  <button onClick={() => handleBooking(flight.id)}>Submit Booking</button>
+                </div>
+              )}
             </li>
           ))}
         </ul>
