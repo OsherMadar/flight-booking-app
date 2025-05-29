@@ -6,10 +6,10 @@ const getAllFlights = async () => {
 };
 
 const createFlight = async (flight) => {
-  const { origin, destination, departure_time, price } = flight;
+  const { origin, destination, departure_time, arrival_time, price } = flight;
   const result = await pool.query(
-    'INSERT INTO flights (origin, destination, departure_time, price) VALUES ($1, $2, $3, $4) RETURNING *',
-    [origin, destination, departure_time, price]
+    'INSERT INTO flights (origin, destination, departure_time, arrival_time, price) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+    [origin, destination, departure_time, arrival_time, price]
   );
   return result.rows[0];
 };

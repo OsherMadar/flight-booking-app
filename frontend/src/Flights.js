@@ -1,3 +1,4 @@
+// frontend/src/Flights.js
 import React, { useEffect, useState } from 'react';
 
 function Flights() {
@@ -91,7 +92,7 @@ function Flights() {
             >
               ✈️ <strong>{flight.origin}</strong> → <strong>{flight.destination}</strong> <br />
               🕐 {new Date(flight.departure_time).toLocaleString()} → {new Date(flight.arrival_time).toLocaleString()} <br />
-              💵 {flight.price} ₪
+              💵 {flight.price ? `${parseFloat(flight.price).toFixed(2)} $` : 'Price not available'}
             </li>
           ))}
         </ul>
