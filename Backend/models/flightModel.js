@@ -14,7 +14,12 @@ const createFlight = async (flight) => {
   return result.rows[0];
 };
 
+const deleteFlightById = async (id) => {
+  await pool.query('DELETE FROM flights WHERE id = $1', [id]);
+};
+
 module.exports = {
   getAllFlights,
   createFlight,
+  deleteFlightById, 
 };

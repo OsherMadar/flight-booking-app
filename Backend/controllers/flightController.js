@@ -12,7 +12,21 @@ const getFlights = async (req, res) => {
 
 const addFlight = async (req, res) => {
   try {
-    const newFlight = await flightModel.createFlight(req.body);
+    const { origin, destination, departure_time, arrival_time, price } = req.body;
+
+    // 🛑 ולידציה - כל שדה חובה
+    if (!origin || !destination || !departure_time || !arrival_time || price === undefined) {
+      return res.status(400).json({ error: 'Missing required flight fields' });
+    }
+
+    const newFlight = await flightModel.createFlight({
+      origin,
+      destination,
+      departure_time,
+      arrival_time,
+      price
+    });
+
     res.status(201).json(newFlight);
   } catch (error) {
     console.error('❌ Error in addFlight:', error);
@@ -20,7 +34,18 @@ const addFlight = async (req, res) => {
   }
 };
 
+const deleteFlight = async (req, res) => {
+  try {
+    await flightModel.deleteFlightById(req.params.id);
+    res.sendStatus(204);
+  } catch (error) {
+    console.error('❌ Error in deleteFlight:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
 module.exports = {
   getFlights,
   addFlight,
+  deleteFlight,
 };
