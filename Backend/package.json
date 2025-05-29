@@ -1,17 +1,20 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Flight booking backend",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
+    "pg": "^8.16.0",
     "express": "^4.18.2",
-    "pg": "^8.10.0",
     "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
   }
 }

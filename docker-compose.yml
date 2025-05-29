@@ -1,17 +1,22 @@
 version: '3.8'
+
 services:
   db:
     image: postgres:15
     container_name: flight-db
-    restart: always
+    environment:
+      POSTGRES_DB: flights
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: admin123
-      POSTGRES_DB: flight_booking
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - backend-network
 
 volumes:
-  pgdata:
+  db-data:
+
+networks:
+  backend-network:
